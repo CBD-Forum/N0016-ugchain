@@ -1,0 +1,71 @@
+curl "localhost:8080/updateData/insert?token=af7b946d-b653-4d7d-b045-b6964d8a668e&data=10000"
+
+curl "localhost:8080/updateData/insert?token=80b23610-2d5a-4585-82bb-553c223d9a99&data=20000"
+
+{"meta":{"code":200,"message":"success"},"data":{"userTokenId":0,"token":"80b23610-2d5a-4585-82bb-553c223d9a99","data":"20000","createTime":null,"updateTime":null,"status":1}}
+
+curl "localhost:8080/updateData/insert?token=f67a91bc-64a1-4593-bf31-c2f7f08768fa&data=30000"
+
+curl "localhost:8080/updateData/insert?token=4bd9f7a2-71f8-4077-9b19-0f5d431ad04d&data=40000"
+
+
+
+curl "localhost:8080/getData/4bd9f7a2-71f8-4077-9b19-0f5d431ad04d"
+
+{"meta":{"code":200,"message":"success"},"data":{"userTokenId":0,"token":"4bd9f7a2-71f8-4077-9b19-0f5d431ad04d","data":"40000","createTime":1493113725000,"updateTime":1493113725000,"status":1}}
+
+curl "localhost:8080/getData/list"
+
+{"meta":{"code":200,"message":"success"},"data":[{"userTokenId":0,"token":"af7b946d-b653-4d7d-b045-b6964d8a668e","data":"10000","createTime":1493105884000,"updateTime":1493105884000,"status":1},{"userTokenId":0,"token":"80b23610-2d5a-4585-82bb-553c223d9a99","data":"20000","createTime":1493113725000,"updateTime":1493113725000,"status":1},{"userTokenId":0,"token":"f67a91bc-64a1-4593-bf31-c2f7f08768fa","data":"30000","createTime":1493113725000,"updateTime":1493113725000,"status":1},{"userTokenId":0,"token":"4bd9f7a2-71f8-4077-9b19-0f5d431ad04d","data":"40000","createTime":1493113725000,"updateTime":1493113725000,"status":1}]}
+
+
+
+{
+    "meta": {
+        "code": 200,
+        "message": "success"
+    },
+    "data": [
+        {
+            "userName":"Mr.Sofar",
+            "userTokenId": 0,
+            "token": "4bd9f7a2-71f8-4077-9b19-0f5d431ad04d",
+            "data": "0",
+            "createTime": 1493113725000,
+            "updateTime": 1493113725000,
+            "status": 1,
+            "derma":"0"
+        },
+        {   
+            "userName":"菜花",
+            "userTokenId": 0,
+            "token": "af7b946d-b653-4d7d-b045-b6964d8a668e",
+            "data": "100",
+            "createTime": 1493105884000,
+            "updateTime": 1493105884000,
+            "status": 1,
+            "derma":"0"
+        },
+        {
+            "userName":"魔术手",
+            "userTokenId": 0,
+            "token": "80b23610-2d5a-4585-82bb-553c223d9a99",
+            "data": "200",
+            "createTime": 1493113725000,
+            "updateTime": 1493113725000,
+            "status": 1,
+            "derma":"0"
+        },
+        {
+            "userName":"麦霸",
+            "userTokenId": 0,
+            "token": "f67a91bc-64a1-4593-bf31-c2f7f08768fa",
+            "data": "300",
+            "createTime": 1493113725000,
+            "updateTime": 1493113725000,
+            "status": 1,
+            "derma":"0"
+        }
+        
+    ]
+};

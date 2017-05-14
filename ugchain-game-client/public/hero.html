@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name ="keywords" content="ugchain">
+    <meta name ="author" content="Mr.Sofar">
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
+    <title>Mr.Sofar</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/js/jquery.cookie.min.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+
+    <!-- TODO -->
+    <script src="/js/lightwallet.min.js"></script>
+    <script type="text/javascript" src="/js/web3.js"></script>
+    <script type="text/javascript" src="/js/hooked-web3-provider.js"></script>
+    <script type="text/javascript" src="/js/async.js"></script>
+    <script src="/js/sdk.js"></script>
+    <!-- <link href="/css/animate.css" rel="stylesheet"> -->
+
+    <script>
+        /**
+            游戏数据
+                sofarW：站台宽度
+                sofarM：站台间距
+                heroMaxCount： 最高分
+        */
+            window['sofarW'] = ["20px", "50px", "25px", "35px", "45px", "30px", "40px"];
+            window['sofarM'] = ["30px", "40px", "50px", "60px", "70px", "80px", "90px", "100px", "110px", "120px"];
+            window["that"];
+            var heroMaxCount = 0;
+            var buyDermaIdEd = [];
+            var userName = "";
+            var gameTouch = false; 
+            var gameAddress = "";           //地址
+            var gameToken = "";             //游戏token
+            var GAME_ID;                //游戏ID
+            var balance = 0;                //余额
+            var ug = 0;
+            var host = "http://localhost:8088";
+            var gameTokenArr = [];
+            var importCreat = 0;
+    </script>
+    <style>
+        .init-account {
+            /*display: none;*/
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            background: #fff;
+            padding: 250px 50px;
+            z-index: 1000;
+        }
+        .init-account button {
+            margin-bottom: 30px;
+        }
+        .info-box {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+        }
+        .init-after {
+            display: none;
+        }
+        .name-status {
+            display: block;
+        }
+        .sell-btn {
+            position: fixed;
+            right: 0px;
+            top: 70px;
+        }
+        .begin-test {
+            position: fixed;
+            right: 0px;
+            top: 105px;
+        }
+        .panel-body {
+            padding-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 遮罩层 -->
+    <div class="hero-mask container">
+        <div class="spiner-example">
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            </div>
+        </div>
+        <div class="mask-content">
+            
+        </div>
+    </div>
+    <!-- 初始账号界面 -->
+    <div class="init-account container">
+        <div class="row init-before" >
+            <button class="btn btn-lg btn-primary center-block" id="creatAccount">创建账户</button>
+            <button class="btn btn-lg btn-success center-block" id="channelAccount">导入账户</button>
+        </div>
+        <div class="row init-after">
+            <div class="form-group col-xs-10 col-xs-offset-1">
+                <input type="text" id="userName"  class="username form-control" placeholder="username">
+            </div>
+            <!-- <div class="form-group col-xs-10 col-xs-offset-1">
+                <input type="text" id="userName"  class="token-code form-control" placeholder="username" disabled="disable">
+            </div> -->
+            <div class="form-group col-xs-10 col-xs-offset-1">
+                <button class="btn btn-danger" style="width:100%;" id="EnterBtn">进入游戏</button>
+            </div>
+        </div>
+    </div>
+    <!-- 游戏界面 -->
+    <section>
+        <!-- <div class="wrap"></div> -->
+        <div class="stage">
+            <ul class="stage-list">
+              
+            </ul>
+            <!-- <div></div> -->
+        </div>
+
+    </section>
+    <!-- 游戏提醒界面 -->
+    <div class="begin">
+        <div class="game-info">
+            <div class="count">0</div>
+            <strong class="game-tip">按住屏幕使竿变长</strong>
+        </div>
+        <!-- <div class="begin-btn">开始</div> -->
+    </div>
+    <!-- 用户信息操作界面 -->
+    <div class="user-handle">
+        <div class="panel panel-default info-box">
+            <div class="panel-body" id="userInfo">
+               
+            </div>
+        </div>
+        <button type="button" class="btn btn-default buy-btn" id="buyDerma" data-toggle="modal" data-target="#myModal">
+            购买皮肤
+        </button>
+        <button type="button" class="btn btn-default ranking-btn" data-toggle="modal" data-target="#myModal1">
+            游戏排行
+        </button>
+        <button type="button" class="btn btn-default sell-btn" data-toggle="modal" data-target="#sellTip">
+            出售账号
+        </button>
+        <button type="button" class="btn btn-danger begin-test">
+            开始游戏
+        </button>
+    </div>
+    <!-- 弹窗提醒 -->
+    <!-- 皮肤商城 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        皮肤商城
+                    </h4>
+                </div>
+                <div class="modal-body" id="modalBox">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        取消
+                    </button>
+                    <button type="button" class="btn btn-primary" id="buyBtn">
+                        购买
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 出售账号 -->
+    <div class="modal fade" id="sellTip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        出售账号
+                    </h4>
+                </div>
+                <div class="modal-body" id="modalBox">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputPrices" class="col-sm-2 control-label">
+                                单价
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="nubmer" class="form-control" id="inputPrices" placeholder="请输入价格">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="" class="btn btn-danger" id="pricesBtn">
+                        出售
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 游戏排行 -->
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        排行榜
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="ranking-list">
+                        
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 系统操作提醒 -->
+    <div class="modal fade" id="tip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        系统提示
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="tip-content">
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="newToken">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 地址操作提醒 -->
+    <div class="modal fade" id="adressTip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        系统提示
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="adress-content">
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                    <button type="button" class="btn btn-primary" class="close" data-dismiss="modal" aria-label="Close">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- token获取提醒 -->
+    <div class="modal fade" id="tokenTip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        请选择账户
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="token-content">
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="initTokenBtn">
+                        创建新账户
+                    </button>
+                    <button type="button" class="btn btn-primary" id="chooseTokenBtn" >
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 密语输入 -->
+    <div class="modal fade" id="seedTip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        请输入密语
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="token-content">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputSeed" placeholder="请输入密语">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="seedBtn" >
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script src="/js/hero-fun.js"></script>
+    <script src="/js/user.js"></script>
+    <script src="/js/hero.js"></script>
+</body>
+</html>
